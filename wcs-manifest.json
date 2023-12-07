@@ -1,0 +1,129 @@
+{
+    "title": "events upcoming",
+    "shortName": "events",
+    "description": "A simple web component to show upcoming events",
+    "descriptionAbstract": "events simple webcomp",
+    "license": "AGPL-3.0-or-later",
+    "repositoryUrl": "https://github.com/noi-techpark/webcomp-events-upcoming.git",
+    "copyrightHolders": [
+        {
+            "name": "NOI",
+            "email": "info@noi.bz.it",
+            "organization": "NOI S.p.A",
+            "organizationUrl": "https://noi.bz.it"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Rudi Thoeni",
+            "email": "r.thoeni@noi.bz.it",
+            "organization": "NOI S.p.A",
+            "organizationUrl": "https://noi.bz.it"
+        }
+    ],
+    "image": "wcs-logo.png",
+    "searchTags": [],
+    "dist": {
+        "basePath": "dist",
+        "files": [
+            "events-upcoming.min.js"
+        ],
+        "scripts": []
+    },
+    "configuration": {
+        "tagName": "events-upcoming",
+        "options": [
+            {
+                "key": "source-filter",
+                "type": "select",
+                "label": "Filter by dataprovider",
+                "required": false,        
+                "options": {
+                  "values": [
+                    "all",
+                    "lts",
+                    "idm",
+                    "siag",
+                    "dss",
+                    "suedtirolwein",
+                    "sta",
+                    "archapp"
+                  ],
+                  "default":"all"
+                }
+              },
+              {
+                "key": "loc-filter",
+                "type": "text",
+                "label": "Location Filter (pass type + id check out https://tourism.opendatahub.com/v1/Location)",
+                "required": false,
+                "options": {
+                  "default": ""
+                }
+              },
+            {
+                "key": "max-events",
+                "type": "number",
+                "label": "Max number of events to display",
+                "required": false,
+                "options": {
+                    "default": 4
+                }
+            },
+            {
+                "key": "event-rotation-interval",
+                "type": "number",
+                "label": "Event rotation interval in seconds, if not all events are visible on screen. Will be ignored if max-events os set to 1",
+                "required": false,
+                "options": {
+                    "default": 60
+                }
+            },
+            {
+                "key": "language-rotation-interval",
+                "type": "number",
+                "label": "Language rotation interval in seconds. Supported languages are 'en','de' and 'it'",
+                "required": false,
+                "options": {
+                    "default": 10
+                }
+            },
+            {
+                "key": "image-gallery-url",
+                "type": "text",
+                "label": "Gallery image s3 bucket URL",
+                "required": false,
+                "options": {
+                    "default": "https://s3.eu-west-1.amazonaws.com/it.bz.noi.today.eurac.gallery"
+                }
+            },
+            {
+                "key": "image-gallery-interval",
+                "type": "number",
+                "label": "Gallery interval in seconds",
+                "required": false,
+                "options": {
+                    "default": 60
+                }
+            },
+            {
+                "key": "font-url",
+                "type": "text",
+                "label": "URL to a valid font css file",
+                "required": false,
+                "options": {
+                    "default": "https://fonts.testingmachine.eu/source-sans-pro/style.css"
+                }
+            },
+            {
+                "key": "font-name",
+                "type": "text",
+                "label": "Name of the font loaded from the font URL",
+                "required": false,
+                "options": {
+                    "default": "Source Sans Pro"
+                }
+            }
+        ]
+    }
+}
