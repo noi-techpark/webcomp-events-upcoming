@@ -7,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
   <EventsUpcoming
     :options="{
-      eventLocation: eventLocation,
-      room: room,
+      locationFilter: locationFilter,
+      language: language,
       maxEvents: maxEvents,
       eventRotationInterval: eventRotationInterval,
       languageRotationInterval: languageRotationInterval,
@@ -23,12 +23,26 @@ import EventsUpcoming from "./components/EventsUpcoming.vue";
 export default {
   name: "App",
   props: {
-    eventLocation: {
+    location: {
       type: String,
-      default: "EC",
+      default: "",
     },
-    room: { type: String, default: "" },
-    maxEvents: { type: Number, default: 4 },
+    topic: {
+      type: String,
+      default: "",
+    },
+    language: {
+      type: String,
+      default: "en",
+    },
+    source: {
+      type: String,
+      default: "",
+    },
+    maxEvents: {
+      type: Number,
+      default: 10,
+    },
     eventRotationInterval: {
       type: Number,
       default: 60,

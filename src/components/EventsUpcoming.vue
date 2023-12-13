@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     v-bind:style="{ 'font-family': this.options.fontName + ', sans-serif' }"
   >
     <header>
-      <h1 class="title"><strong>TODAY</strong>.NOI.BZ.IT</h1>
+      <h1 class="title">Upcoming <strong>Events</strong></h1>
       <img
         :src="require('@/assets/icons/NOI_2_BK_borderless.png')"
         class="noi-logo"
@@ -25,12 +25,12 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <strong> {{ event.shortName }} </strong>
                 </a>
                 <br />
-                <small> {{ event.companyName }}</small>
+                <small> {{ event.eventLocation }} </small>
               </h2>
               <h2 v-else>
                 <strong> {{ event.shortName }} </strong>
                 <br />
-                <small> {{ event.companyName }} </small>
+                <small> {{ event.eventLocation }} </small>
               </h2>
             </div>
             <div
@@ -39,13 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             >
               <div class="location">
                 <span v-for="(room, index) in event.rooms" :key="room.key">
-                  <a
-                    v-if="index < 3"
-                    class="room"
-                    href="https://maps.noi.bz.it/en/"
-                    target="_blank"
-                    >{{ room }}</a
-                  >
+                  <a v-if="index < 3" class="room">{{ room }}</a>
                   <span v-else>...</span>
                   <span
                     v-if="
@@ -60,13 +54,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               </div>
               <div class="starts-in">
                 <div>
-                  <small>
-                    {{ event.time }}
-                    <br />
-                  </small>
                   <strong>
                     {{ event.startDate }}
+                    <br />
                   </strong>
+                  <small>
+                    {{ event.time }}
+                  </small>
                 </div>
               </div>
             </div>
@@ -99,24 +93,24 @@ export default {
       const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
       const params = new URLSearchParams([
         ["begindate", new Date().toISOString()],
-        ["eventlocation", this.options.eventLocation],
-        ["room", this.options.room],
+        ["locfilter", this.options.locationFilter],
+        ["language", this.options.language],
+        ["langfilter", this.options.language],
         ["pagesize", this.options.maxEvents ? this.options.maxEvents : 999],
-        ["datetimeformat", "uxtimestamp"],
-        ["onlyactive", true],
+        ["active", true],
         ["sortorder", "ASC"],
         ["origin", "webcomp-events-upcoming"],
       ]);
-      if (this.options.room != "" && this.options.room != null) {
-        params.set(
-          "rawfilter",
-          "in(RoomBooked.[*].SpaceDescRoomMapping," +
-            '"' +
-            this.options.room +
-            '"' +
-            ")"
-        );
-      }
+      // if (this.options.room != "" && this.options.room != null) {
+      //   params.set(
+      //     "rawfilter",
+      //     "in(RoomBooked.[*].SpaceDescRoomMapping," +
+      //       '"' +
+      //       this.options.room +
+      //       '"' +
+      //       ")"
+      //   );
+      // }
       fetch(baseURL + params, {
         method: "GET",
         headers: {
@@ -129,14 +123,19 @@ export default {
           var items = json.Items;
           for (var i = 0; i <= items.length - 1; ++i) {
             let element = items[i];
+            //TODO use EventDAte "EventDate": [{"To": "2023-12-08T00:00:00","End": "22:00:00","From": "2023-12-08T00:00:00","Begin": "10:00:00" nearest
             let startDate = new Date(element.DateBegin);
             let endDate = new Date(element.DateEnd);
             let event = {
-              shortName: element.Detail["de"].Title,
-              companyName: element.CompanyName,
-              eventText: element.EventTextIT,
-              webAddress: element.WebAddress,
-              rooms: null,
+              shortName:
+                element.Detail[this.options.language].Title ?? "no title",
+              eventLocation:
+                element.LocationInfo.DistrictInfo.Name[this.options.language] +
+                "-" +
+                element.LocationInfo.RegionInfo.Name[this.options.language],
+              //eventText: element.EventTextIT,
+              webAddress: element.ContactInfos[this.options.language].Url,
+              rooms: "",
               startDate: this.formatDate(startDate),
               time: this.formatTime(startDate, endDate),
             };
