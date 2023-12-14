@@ -10,10 +10,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   >
     <header>
       <h1 class="title">Upcoming <strong>Events</strong></h1>
-      <img
+      <!-- <img
         :src="require('@/assets/icons/NOI_2_BK_borderless.png')"
         class="noi-logo"
-      />
+      /> -->
     </header>
     <div class="slideshow-container full-height">
       <div class="content container-fluid">
@@ -37,23 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               class="col-sm-5 col-xs-12 col-lg-5 col-lg-offset-0 col-md-5"
               style="justify-content: flex-end"
             >
-              <div class="location">
-                <span v-for="(room, index) in event.rooms" :key="room.key">
-                  <a v-if="index < 3" class="room">{{ room }}</a>
-                  <span v-else>...</span>
-                  <span
-                    v-if="
-                      index >= 0 &&
-                      index < 2 &&
-                      event.rooms.length >= 2 &&
-                      index != event.rooms.length - 1
-                    "
-                    >,</span
-                  >
-                </span>
-              </div>
-              <div class="starts-in">
-                <div>
+              <!-- <div class="location">
+                <span class="room">
                   <strong>
                     {{ event.startDate }}
                     <br />
@@ -61,6 +46,15 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <small>
                     {{ event.time }}
                   </small>
+                </span>
+              </div> -->
+              <div class="starts-in">
+                <div>
+                  <strong>
+                    {{ event.startDate }}
+                    <br />
+                  </strong>
+                  <small> - {{ event.endDate }} </small>
                 </div>
               </div>
             </div>
@@ -80,6 +74,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   name: "EventsUpcoming",
   props: {
@@ -130,19 +126,20 @@ export default {
               shortName:
                 element.Detail[this.options.language].Title ?? "no title",
               eventLocation:
-                element.LocationInfo.DistrictInfo.Name[this.options.language] +
-                "-" +
-                element.LocationInfo.RegionInfo.Name[this.options.language],
+                element.LocationInfo.DistrictInfo.Name[this.options.language],
               //eventText: element.EventTextIT,
               webAddress: element.ContactInfos[this.options.language].Url,
               rooms: "",
               startDate: this.formatDate(startDate),
-              time: this.formatTime(startDate, endDate),
+              endDate: this.formatDate(endDate),
             };
             this.events.push(event);
           }
         });
       });
+    },
+    getNextBeginDate() {
+      return "hallo";
     },
     formatTime(startDate, endDate) {
       return new String(
@@ -156,27 +153,28 @@ export default {
       );
     },
     formatDate(date) {
-      var options = {
-        year: "2-digit",
-        month: "short",
-        day: "numeric",
-      };
-      let day = date.getDate();
-      let formatStartDate = date.toLocaleDateString("it-it", options);
-      if (day >= 10)
-        formatStartDate =
-          formatStartDate.charAt(0) +
-          formatStartDate.charAt(1) +
-          formatStartDate.charAt(2) +
-          formatStartDate.charAt(3).toUpperCase() +
-          formatStartDate.slice(4);
-      else
-        formatStartDate =
-          formatStartDate.charAt(0) +
-          formatStartDate.charAt(1) +
-          formatStartDate.charAt(2).toUpperCase() +
-          formatStartDate.slice(3);
-      return formatStartDate;
+      // var options = {
+      //   year: "2-digit",
+      //   month: "short",
+      //   day: "numeric",
+      // };
+      // let day = date.getDate();
+      // let formatStartDate = date.toLocaleDateString("it-it", options);
+      // if (day >= 10)
+      //   formatStartDate =
+      //     formatStartDate.charAt(0) +
+      //     formatStartDate.charAt(1) +
+      //     formatStartDate.charAt(2) +
+      //     formatStartDate.charAt(3).toUpperCase() +
+      //     formatStartDate.slice(4);
+      // else
+      //   formatStartDate =
+      //     formatStartDate.charAt(0) +
+      //     formatStartDate.charAt(1) +
+      //     formatStartDate.charAt(2).toUpperCase() +
+      //     formatStartDate.slice(3);
+      // return formatStartDate;
+      return moment(date).format("DD-MM-YYYY");
     },
   },
   created: function () {
@@ -231,19 +229,21 @@ h1.title {
 
 .slideshow-container {
   position: relative;
-  padding: 20px;
-  background-color: #000;
+  padding: 15px;
+  background-color: #3c763d;
   min-height: 85vh;
+  border-radius: 15px;
 }
 
 .line {
   background-color: white;
   margin: 0;
   margin-bottom: 15px;
-  padding: 0 20px;
+  padding: 0 25px;
   position: relative;
   display: block;
   height: 17vh;
+  border-radius: 15px;
 }
 
 .line > div {
@@ -271,13 +271,14 @@ body > div {
 
 .location {
   color: #fff;
-  background-color: #000;
+  background-color: #3c763d;
   padding: 10px 26px;
   margin-left: 20px;
   margin-right: 20px;
   font-size: 1.6em;
   font-weight: bold;
   max-width: 50%;
+  border-radius: 15px;
 }
 
 .location a {
@@ -316,6 +317,11 @@ strong {
 .starts-in strong {
   font-size: 1.25em;
 }
+
+.starts-in small {
+  color: #8c8c8c;
+}
+
 .footer {
   padding-top: 20px;
   bottom: 0;
