@@ -25,36 +25,36 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <strong> {{ event.shortName }} </strong>
                 </a>
                 <br />
-                <small> {{ event.eventLocation }} </small>
+                <small> {{ event.dateperiod }} </small>
               </h2>
               <h2 v-else>
                 <strong> {{ event.shortName }} </strong>
                 <br />
-                <small> {{ event.eventLocation }} </small>
+                <small> {{ event.dateperiod }} </small>
               </h2>
             </div>
             <div
               class="col-sm-5 col-xs-12 col-lg-5 col-lg-offset-0 col-md-5"
               style="justify-content: flex-end"
             >
-              <!-- <div class="location">
+              <div class="location">
                 <span class="room">
                   <strong>
-                    {{ event.startDate }}
+                    {{ event.eventLocation }}
                     <br />
                   </strong>
-                  <small>
+                  <!-- <small>
                     {{ event.time }}
-                  </small>
+                  </small> -->
                 </span>
-              </div> -->
+              </div>
               <div class="starts-in">
                 <div>
                   <strong>
-                    {{ event.startDate }}
+                    {{ event.nextBeginDate }}
                     <br />
                   </strong>
-                  <small> - {{ event.endDate }} </small>
+                  <small> {{ event.nextBeginTime }} </small>
                 </div>
               </div>
             </div>
@@ -120,9 +120,12 @@ export default {
           var items = json.Items;
           for (var i = 0; i <= items.length - 1; ++i) {
             let element = items[i];
+
+            console.log(element.Detail[this.options.language].Title);
             //TODO use EventDAte "EventDate": [{"To": "2023-12-08T00:00:00","End": "22:00:00","From": "2023-12-08T00:00:00","Begin": "10:00:00" nearest
             let startDate = new Date(element.DateBegin);
             let endDate = new Date(element.DateEnd);
+            let nextbegin = this.getNextBeginDate(element.EventDate);
             let event = {
               shortName:
                 element.Detail[this.options.language].Title ?? "no title",
@@ -130,51 +133,58 @@ export default {
                 element.LocationInfo.DistrictInfo.Name[this.options.language],
               //eventText: element.EventTextIT,
               webAddress: element.ContactInfos[this.options.language].Url,
-              rooms: "",
+              dateperiod:
+                this.formatDate(startDate) + " - " + this.formatDate(endDate),
               startDate: this.formatDate(startDate),
               endDate: this.formatDate(endDate),
+              nextBeginDate: this.formatDate(nextbegin[0]),
+              nextBeginTime: nextbegin[1],
             };
             this.events.push(event);
           }
         });
       });
     },
-    getNextBeginDate() {
-      return "hallo";
+    getNextBeginDate(eventdate) {
+      let nextbegindate = null;
+      let nextbegintime = null;
+      let now = Date.now();
+      let tempdifference = 9999999999999;
+      eventdate.forEach((value) => {
+        //If Eventdate is defined as single Days
+        if (value.From == value.To) {
+          //calculate timediff from now and get closest greater than
+          var difference = new Date(value.From) - now;
+          //Only if
+          if (difference >= 0 && difference <= tempdifference) {
+            console.log("if check");
+            nextbegindate = new Date(value.From);
+            console.log(value.End);
+
+            if (value.Begin == "00:00:00" && value.End.startsWith("23:59"))
+              nextbegintime = "all day";
+            else
+              nextbegintime =
+                value.Begin.substring(0, 5) + " - " + value.End.substring(0, 5);
+            tempdifference = difference;
+          }
+        }
+        //If interval is valid set datetime now as date
+        else {
+          if (new Date(value.From) <= now && new Date(value.To) >= now) {
+            nextbegindate = now;
+            nextbegintime = "no info";
+          }
+        }
+      });
+
+      return [nextbegindate, nextbegintime];
     },
-    formatTime(startDate, endDate) {
-      return new String(
-        startDate.getHours() +
-          ":" +
-          String(startDate.getMinutes()).padStart(2, "0") +
-          " - " +
-          endDate.getHours() +
-          ":" +
-          String(endDate.getMinutes()).padStart(2, "0")
-      );
+    formatTime(date) {
+      console.log(date);
+      return moment(date).format("HH:mm");
     },
     formatDate(date) {
-      // var options = {
-      //   year: "2-digit",
-      //   month: "short",
-      //   day: "numeric",
-      // };
-      // let day = date.getDate();
-      // let formatStartDate = date.toLocaleDateString("it-it", options);
-      // if (day >= 10)
-      //   formatStartDate =
-      //     formatStartDate.charAt(0) +
-      //     formatStartDate.charAt(1) +
-      //     formatStartDate.charAt(2) +
-      //     formatStartDate.charAt(3).toUpperCase() +
-      //     formatStartDate.slice(4);
-      // else
-      //   formatStartDate =
-      //     formatStartDate.charAt(0) +
-      //     formatStartDate.charAt(1) +
-      //     formatStartDate.charAt(2).toUpperCase() +
-      //     formatStartDate.slice(3);
-      // return formatStartDate;
       return moment(date).format("DD-MM-YYYY");
     },
   },

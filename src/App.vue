@@ -12,8 +12,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       maxEvents: maxEvents,
       eventRotationInterval: eventRotationInterval,
       languageRotationInterval: languageRotationInterval,
-      imageGalleryInterval: imageGalleryInterval,
-      imageGalleryUrl: imageGalleryUrl,
       fontName: fontName,
     }"
   />
@@ -50,15 +48,6 @@ export default {
     languageRotationInterval: {
       type: Number,
       default: 10,
-    },
-    imageGalleryUrl: {
-      type: String,
-      default:
-        "https://s3.eu-west-1.amazonaws.com/it.bz.noi.today.eurac.gallery",
-    },
-    imageGalleryInterval: {
-      type: Number,
-      default: 60,
     },
     fontUrl: {
       type: String,

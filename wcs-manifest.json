@@ -1,6 +1,6 @@
 {
     "title": "events upcoming",
-    "shortName": "events",
+    "shortName": "events-upcoming",
     "description": "A simple web component to show upcoming events",
     "descriptionAbstract": "events simple webcomp",
     "license": "AGPL-3.0-or-later",
@@ -42,12 +42,8 @@
                   "values": [
                     "all",
                     "lts",
-                    "idm",
-                    "siag",
-                    "dss",
-                    "suedtirolwein",
-                    "sta",
-                    "archapp"
+                    "drin",
+                    "trevilab"
                   ],
                   "default":"all"
                 }
@@ -67,7 +63,7 @@
                 "label": "Max number of events to display",
                 "required": false,
                 "options": {
-                    "default": 4
+                    "default": 12
                 }
             },
             {
@@ -86,24 +82,6 @@
                 "required": false,
                 "options": {
                     "default": 10
-                }
-            },
-            {
-                "key": "image-gallery-url",
-                "type": "text",
-                "label": "Gallery image s3 bucket URL",
-                "required": false,
-                "options": {
-                    "default": "https://s3.eu-west-1.amazonaws.com/it.bz.noi.today.eurac.gallery"
-                }
-            },
-            {
-                "key": "image-gallery-interval",
-                "type": "number",
-                "label": "Gallery interval in seconds",
-                "required": false,
-                "options": {
-                    "default": 60
                 }
             },
             {
