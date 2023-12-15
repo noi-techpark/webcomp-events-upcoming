@@ -94,7 +94,7 @@ export default {
         ["langfilter", this.options.language],
         ["pagesize", this.options.maxEvents ? this.options.maxEvents : 999],
         ["active", true],
-        ["sortorder", "ASC"],
+        ["sort", "asc"],
         ["origin", "webcomp-events-upcoming"],
       ]);
       // if (this.options.room != "" && this.options.room != null) {
