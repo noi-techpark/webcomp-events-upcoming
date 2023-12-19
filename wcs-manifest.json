@@ -34,22 +34,21 @@
         "tagName": "events-upcoming",
         "options": [
             {
-                "key": "source-filter",
+                "key": "source",
                 "type": "select",
                 "label": "Filter by dataprovider",
                 "required": false,        
                 "options": {
-                  "values": [
-                    "all",
+                  "values": [                    
                     "lts",
                     "drin",
                     "trevilab"
                   ],
-                  "default":"all"
+                  "default":""
                 }
               },
               {
-                "key": "loc-filter",
+                "key": "location",
                 "type": "text",
                 "label": "Location Filter (pass type + id check out https://tourism.opendatahub.com/v1/Location)",
                 "required": false,

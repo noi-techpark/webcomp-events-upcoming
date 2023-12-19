@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="slideshow-container full-height">
       <div class="content container-fluid">
         <div class="lines">
-          <div class="row line" v-for="event in events" :key="event.key">
+          <div class="row line" v-for="event in orderedEvents" :key="event.key">
             <div class="col-xs-12 col-sm-7 col-lg-7 col-md-7 description">
               <h2 v-if="event.webAddress != null && event.webAddress != ''">
                 <a :href="event.webAddress" target="_blank">
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               <div class="starts-in">
                 <div>
                   <strong>
-                    {{ event.nextBeginDate }}
+                    {{ formatDate(event.nextBeginDate) }}
                     <br />
                   </strong>
                   <small> {{ event.nextBeginTime }} </small>
@@ -75,6 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 <script>
 import moment from "moment";
+import _ from "lodash";
 
 export default {
   name: "EventsUpcoming",
@@ -82,6 +83,11 @@ export default {
     options: Object,
     default: () => {
       return {};
+    },
+  },
+  computed: {
+    orderedEvents: function () {
+      return _.orderBy(this.events, "nextBeginDate");
     },
   },
   methods: {
@@ -98,16 +104,6 @@ export default {
         ["sort", "asc"],
         ["origin", "webcomp-events-upcoming"],
       ]);
-      // if (this.options.room != "" && this.options.room != null) {
-      //   params.set(
-      //     "rawfilter",
-      //     "in(RoomBooked.[*].SpaceDescRoomMapping," +
-      //       '"' +
-      //       this.options.room +
-      //       '"' +
-      //       ")"
-      //   );
-      // }
       fetch(baseURL + params, {
         method: "GET",
         headers: {
@@ -137,7 +133,7 @@ export default {
                 this.formatDate(startDate) + " - " + this.formatDate(endDate),
               startDate: this.formatDate(startDate),
               endDate: this.formatDate(endDate),
-              nextBeginDate: this.formatDate(nextbegin[0]),
+              nextBeginDate: nextbegin[0],
               nextBeginTime: nextbegin[1],
             };
             this.events.push(event);
@@ -150,14 +146,23 @@ export default {
       let nextbegintime = null;
       let now = Date.now();
       let tempdifference = 9999999999999;
+
       eventdate.forEach((value) => {
+        var fullstartdate = new Date(
+          value.From.replace("00:00:00", value.Begin)
+        );
+        var fullenddate = new Date(value.To.replace("00:00:00", value.End));
+
         //If Eventdate is defined as single Days
         if (value.From == value.To) {
           //calculate timediff from now and get closest greater than
-          var difference = new Date(value.From) - now;
-          //Only if
-          if (difference >= 0 && difference <= tempdifference) {
-            console.log("if check");
+          var difference = fullstartdate - now;
+          var hasended = fullenddate - now;
+
+          if (hasended >= 0 && difference <= 0) difference = difference * -1;
+
+          //Only if has not ended and the difference is the minimum
+          if (hasended >= 0 && difference <= tempdifference) {
             nextbegindate = new Date(value.From);
             console.log(value.End);
 
@@ -203,7 +208,7 @@ export default {
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
 .full-height {
-  height: 100%;
+  /* height: 100%; */
 }
 
 .content {

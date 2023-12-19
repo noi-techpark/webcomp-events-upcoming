@@ -7,8 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 <template>
   <EventsUpcoming
     :options="{
-      locationFilter: locationFilter,
+      locationFilter: location,
       language: language,
+      source: source,
       maxEvents: maxEvents,
       eventRotationInterval: eventRotationInterval,
       languageRotationInterval: languageRotationInterval,
@@ -22,10 +23,6 @@ export default {
   name: "App",
   props: {
     location: {
-      type: String,
-      default: "",
-    },
-    topic: {
       type: String,
       default: "",
     },
