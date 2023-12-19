@@ -39,12 +39,13 @@
                 "label": "Filter by dataprovider",
                 "required": false,        
                 "options": {
-                  "values": [                    
+                  "values": [
+                    "null",           
                     "lts",
                     "drin",
                     "trevilab"
                   ],
-                  "default":""
+                  "default":"null"
                 }
               },
               {
