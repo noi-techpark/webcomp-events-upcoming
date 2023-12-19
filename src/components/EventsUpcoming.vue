@@ -131,7 +131,9 @@ export default {
               //eventText: element.EventTextIT,
               webAddress: element.ContactInfos[this.options.language].Url,
               dateperiod:
-                this.formatDate(startDate) + " - " + this.formatDate(endDate),
+                this.formatDate(startDate) + startDate != endDate
+                  ? " - " + this.formatDate(endDate)
+                  : "",
               startDate: this.formatDate(startDate),
               endDate: this.formatDate(endDate),
               nextBeginDate: nextbegin[0],
