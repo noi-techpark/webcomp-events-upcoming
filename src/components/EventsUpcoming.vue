@@ -97,6 +97,7 @@ export default {
       const params = new URLSearchParams([
         ["begindate", new Date().toISOString()],
         ["locfilter", this.options.locationFilter],
+        ["source", this.options.source],
         ["language", this.options.language],
         ["langfilter", this.options.language],
         ["pagesize", this.options.maxEvents ? this.options.maxEvents : 999],
