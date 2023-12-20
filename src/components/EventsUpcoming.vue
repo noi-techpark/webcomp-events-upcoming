@@ -130,10 +130,7 @@ export default {
                 element.LocationInfo.DistrictInfo.Name[this.options.language],
               //eventText: element.EventTextIT,
               webAddress: element.ContactInfos[this.options.language].Url,
-              dateperiod:
-                this.formatDate(startDate) + startDate != endDate
-                  ? " - " + this.formatDate(endDate)
-                  : "",
+              dateperiod: this.getPeriod(startDate, endDate),
               startDate: this.formatDate(startDate),
               endDate: this.formatDate(endDate),
               nextBeginDate: nextbegin[0],
@@ -188,8 +185,14 @@ export default {
 
       return [nextbegindate, nextbegintime];
     },
+    getPeriod(startDate, endDate) {
+      var period = this.formatDate(startDate);
+      if (startDate != endDate)
+        period = period + " - " + this.formatDate(endDate);
+
+      return period;
+    },
     formatTime(date) {
-      console.log(date);
       return moment(date).format("HH:mm");
     },
     formatDate(date) {
