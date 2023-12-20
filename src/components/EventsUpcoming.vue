@@ -92,8 +92,8 @@ export default {
   },
   methods: {
     async fetchData() {
-      //const baseURL = "https://api.tourism.testingmachine.eu/v1/Event?";
-      const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
+      const baseURL = "https://api.tourism.testingmachine.eu/v1/Event?";
+      //const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
       const params = new URLSearchParams([
         ["begindate", new Date().toISOString()],
         ["locfilter", this.options.locationFilter],
