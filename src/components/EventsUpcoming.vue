@@ -126,8 +126,11 @@ export default {
             let event = {
               shortName:
                 element.Detail[this.options.language].Title ?? "no title",
-              eventLocation:
-                element.LocationInfo.DistrictInfo.Name[this.options.language],
+              eventLocation: this.getLocationToShow(
+                element,
+                this.options.locationToShow,
+                this.options.language
+              ),
               //eventText: element.EventTextIT,
               webAddress: element.ContactInfos[this.options.language].Url,
               dateperiod: this.getPeriod(startDate, endDate),
@@ -140,6 +143,19 @@ export default {
           }
         });
       });
+    },
+    getLocationToShow(event, locationToShow, language) {
+      if (locationToShow == "district")
+        return event.LocationInfo.DistrictInfo.Name[language];
+      if (locationToShow == "municipality")
+        return event.LocationInfo.MunicipalityInfo.Name[language];
+      if (locationToShow == "tourismorganization")
+        return event.LocationInfo.TvInfo.Name[language];
+      if (locationToShow == "region")
+        return event.LocationInfo.RegionInfo?.Name[language];
+      if (locationToShow == "location")
+        return event.EventAdditionalInfos[language].Location;
+      else return event.LocationInfo.DistrictInfo.Name[language];
     },
     getNextBeginDate(eventdate) {
       let nextbegindate = null;

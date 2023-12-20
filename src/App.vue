@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       language: language,
       source: source,
       maxEvents: maxEvents,
-      eventRotationInterval: eventRotationInterval,
+      locationToShow: locationToShow,
       languageRotationInterval: languageRotationInterval,
       fontName: fontName,
     }"
@@ -38,9 +38,9 @@ export default {
       type: Number,
       default: 10,
     },
-    eventRotationInterval: {
-      type: Number,
-      default: 60,
+    locationToShow: {
+      type: String,
+      default: "district",
     },
     languageRotationInterval: {
       type: Number,

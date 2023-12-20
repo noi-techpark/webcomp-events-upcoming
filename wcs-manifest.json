@@ -49,6 +49,20 @@
                 }
               },
               {
+                "key": "language",
+                "type": "select",
+                "label": "language to show",
+                "required": false,        
+                "options": {
+                  "values": [
+                    "de",
+                    "it",        
+                    "en"
+                  ],
+                  "default":"en"
+                }
+            },
+              {
                 "key": "location",
                 "type": "text",
                 "label": "Location Filter (pass type + id check out https://tourism.opendatahub.com/v1/Location)",
@@ -67,21 +81,19 @@
                 }
             },
             {
-                "key": "event-rotation-interval",
-                "type": "number",
-                "label": "Event rotation interval in seconds, if not all events are visible on screen. Will be ignored if max-events os set to 1",
-                "required": false,
+                "key": "location-to-show",
+                "type": "select",
+                "label": "Select what locationinfo to show",
+                "required": false,        
                 "options": {
-                    "default": 60
-                }
-            },
-            {
-                "key": "language-rotation-interval",
-                "type": "number",
-                "label": "Language rotation interval in seconds. Supported languages are 'en','de' and 'it'",
-                "required": false,
-                "options": {
-                    "default": 10
+                  "values": [
+                    "district",
+                    "municipality",        
+                    "tourismassociation",
+                    "region",
+                    "location"
+                  ],
+                  "default":"null"
                 }
             },
             {
