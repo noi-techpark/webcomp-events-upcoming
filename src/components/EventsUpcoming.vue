@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div class="slideshow-container full-height">
       <div class="content container-fluid">
         <div class="lines">
-          <div class="row line" v-for="event in orderedEvents" :key="event.key">
+          <div class="row line" v-for="event in events" :key="event.key">
             <div class="col-xs-12 col-sm-7 col-lg-7 col-md-7 description">
               <h2 v-if="event.webAddress != null && event.webAddress != ''">
                 <a :href="event.webAddress" target="_blank">
@@ -180,7 +180,6 @@ export default {
           //Only if has not ended and the difference is the minimum
           if (hasended >= 0 && difference <= tempdifference) {
             nextbegindate = new Date(value.From);
-            console.log(value.End);
 
             if (value.Begin == "00:00:00" && value.End.startsWith("23:59"))
               nextbegintime = "all day";
@@ -203,8 +202,10 @@ export default {
     },
     getPeriod(startDate, endDate) {
       var period = this.formatDate(startDate);
-      if (startDate != endDate)
+      if (startDate.valueOf() != endDate.valueOf()) {
+        console.log("not equal");
         period = period + " - " + this.formatDate(endDate);
+      }
 
       return period;
     },
@@ -313,9 +314,12 @@ body > div {
   padding: 10px 26px;
   margin-left: 20px;
   margin-right: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   font-size: 1.6em;
   font-weight: bold;
-  max-width: 50%;
+  max-width: 70%;
+  min-width: 70%;
   border-radius: 15px;
 }
 
