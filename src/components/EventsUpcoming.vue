@@ -92,8 +92,8 @@ export default {
   },
   methods: {
     async fetchData() {
-      const baseURL = "https://api.tourism.testingmachine.eu/v1/Event?";
-      //const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
+      //const baseURL = "https://api.tourism.testingmachine.eu/v1/Event?";
+      const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
       const params = new URLSearchParams([
         ["begindate", new Date().toISOString()],
         ["locfilter", this.options.locationFilter],
@@ -102,7 +102,7 @@ export default {
         ["langfilter", this.options.language],
         ["pagesize", this.options.maxEvents ? this.options.maxEvents : 999],
         ["active", true],
-        ["sort", "asc"],
+        ["sort", this.options.eventSortmode],
         ["origin", "webcomp-events-upcoming"],
       ]);
       fetch(baseURL + params, {

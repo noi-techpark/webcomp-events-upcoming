@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       locationToShow: locationToShow,
       languageRotationInterval: languageRotationInterval,
       fontName: fontName,
+      eventSortmode: eventSortmode,
     }"
   />
 </template>
@@ -41,6 +42,10 @@ export default {
     locationToShow: {
       type: String,
       default: "district",
+    },
+    eventSortmode: {
+      type: String,
+      default: "upcomingspecial",
     },
     languageRotationInterval: {
       type: Number,

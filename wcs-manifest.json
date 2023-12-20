@@ -97,6 +97,19 @@
                 }
             },
             {
+                "key": "event-sortmode",
+                "type": "select",
+                "label": "Select what sortmode for events, upcoming = multiple day events first, upcomingspecial = single day events first",
+                "required": false,        
+                "options": {
+                  "values": [
+                    "upcoming",
+                    "upcomingspecial"
+                  ],
+                  "default":"upcomingspecial"
+                }
+            },
+            {
                 "key": "font-url",
                 "type": "text",
                 "label": "URL to a valid font css file",
