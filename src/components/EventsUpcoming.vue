@@ -13,7 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       <!-- <img
         :src="require('@/assets/icons/NOI_2_BK_borderless.png')"
         class="noi-logo"
-      /> -->
+      />  -->
+      <div id="current-date-time">
+        <span id="date">{{ currentDate() }}</span>
+        <span id="time">{{ timestamp }}</span>
+      </div>
     </header>
     <div class="slideshow-container full-height">
       <div class="content container-fluid">
@@ -85,10 +89,29 @@ export default {
       return {};
     },
   },
+  data: function () {
+    return {
+      events: [],
+      timestamp: "",
+    };
+  },
   computed: {
     orderedEvents: function () {
       return _.orderBy(this.events, "nextBeginDate");
     },
+  },
+  created: function () {
+    this.getNow();
+    this.fetchData();
+    this.rotateEvents();
+    // create cron job
+    setInterval(
+      this.rotateLanguage,
+      this.options.languageRotationInterval * 1000
+    );
+    setInterval(this.getNow, 1000);
+    setInterval(this.rotateEvents, this.options.eventRotationInterval * 1000);
+    setInterval(this.nextImage, this.options.imageGalleryInterval * 1000);
   },
   methods: {
     async fetchData() {
@@ -143,6 +166,21 @@ export default {
           }
         });
       });
+    },
+    rotateEvents() {
+      // first update events
+      this.fetchData();
+    },
+    currentDate() {
+      const current = new Date();
+      return current
+        .toLocaleDateString("en-GB", {
+          month: "long",
+          year: "numeric",
+          day: "numeric",
+        })
+        .replace(",", "")
+        .toUpperCase();
     },
     getLocationToShow(event, locationToShow, language) {
       if (locationToShow == "district")
@@ -215,14 +253,15 @@ export default {
     formatDate(date) {
       return moment(date).format("DD-MM-YYYY");
     },
-  },
-  created: function () {
-    this.fetchData();
-  },
-  data: function () {
-    return {
-      events: [],
-    };
+    getNow: function () {
+      const today = new Date();
+      const time =
+        today.getHours() +
+        ":" +
+        (today.getMinutes() < 10 ? "0" : "") +
+        today.getMinutes();
+      this.timestamp = time;
+    },
   },
 };
 </script>
@@ -263,7 +302,7 @@ h2 small {
 
 h1.title {
   padding: 5px;
-  font-size: 5em;
+  font-size: 4em;
 }
 
 .slideshow-container {
@@ -319,7 +358,7 @@ body > div {
   font-size: 1.6em;
   font-weight: bold;
   max-width: 70%;
-  min-width: 70%;
+  /* min-width: 50%; */
   border-radius: 15px;
 }
 
@@ -354,6 +393,7 @@ strong {
   font-size: 2em;
   line-height: 1;
   justify-content: right;
+  min-width: 20%;
 }
 
 .starts-in strong {
@@ -374,6 +414,22 @@ strong {
 }
 .footer-text {
   color: white;
+}
+
+#current-date-time {
+  font-size: 48px;
+}
+
+#date {
+  padding-right: 40px;
+  font-size: 48px;
+}
+
+#time {
+  font-size: 24px;
+  color: #b2b5b6;
+  font-weight: bold;
+  vertical-align: super;
 }
 
 @media screen and (min-width: 320px) and (max-width: 812px) {

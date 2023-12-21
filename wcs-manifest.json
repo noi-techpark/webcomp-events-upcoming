@@ -110,6 +110,24 @@
                 }
             },
             {
+              "key": "event-rotation-interval",
+              "type": "number",
+              "label": "Event rotation interval in seconds, if not all events are visible on screen. Will be ignored if max-events os set to 1",
+              "required": false,
+              "options": {
+                  "default": 60
+              }
+            },
+            {
+                "key": "language-rotation-interval",
+                "type": "number",
+                "label": "Language rotation interval in seconds. Supported languages are 'en','de' and 'it'",
+                "required": false,
+                "options": {
+                    "default": 10
+                }
+            },
+            {
                 "key": "font-url",
                 "type": "text",
                 "label": "URL to a valid font css file",

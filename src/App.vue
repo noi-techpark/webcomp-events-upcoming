@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       source: source,
       maxEvents: maxEvents,
       locationToShow: locationToShow,
+      eventRotationInterval: eventRotationInterval,
       languageRotationInterval: languageRotationInterval,
       fontName: fontName,
       eventSortmode: eventSortmode,
@@ -46,6 +47,10 @@ export default {
     eventSortmode: {
       type: String,
       default: "upcomingspecial",
+    },
+    eventRotationInterval: {
+      type: Number,
+      default: 60,
     },
     languageRotationInterval: {
       type: Number,
