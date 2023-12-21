@@ -227,6 +227,9 @@ export default {
       let now = Date.now();
       let tempdifference = 9999999999999;
 
+      let allday = { de: "ganztägig", it: "giornata intera", en: "all day" };
+      let noinfo = { de: "keine angabe", it: "senza info", en: "no info" };
+
       eventdate.forEach((value) => {
         var fullstartdate = new Date(
           value.From.replace("00:00:00", value.Begin)
@@ -249,7 +252,7 @@ export default {
               value.Begin.startsWith("00:00") &&
               value.End.startsWith("23:59")
             )
-              nextbegintime = "all day";
+              nextbegintime = allday[this.currentlanguage];
             else
               nextbegintime =
                 value.Begin.substring(0, 5) + " - " + value.End.substring(0, 5);
@@ -260,7 +263,7 @@ export default {
         else {
           if (new Date(value.From) <= now && new Date(value.To) >= now) {
             nextbegindate = now;
-            nextbegintime = "no info";
+            nextbegintime = noinfo[this.currentlanguage];
           }
         }
       });
@@ -469,6 +472,10 @@ strong {
 @media screen and (min-width: 320px) and (max-width: 812px) {
   h1 {
     font-size: 2.6em;
+  }
+
+  h1.title {
+    display: none;
   }
 
   header {
