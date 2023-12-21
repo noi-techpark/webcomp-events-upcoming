@@ -51,10 +51,11 @@
               {
                 "key": "language",
                 "type": "select",
-                "label": "language to show",
+                "label": "language to show (if no language is checked the events will rotate and displayed in all languages)",
                 "required": false,        
                 "options": {
                   "values": [
+                    "",
                     "de",
                     "it",        
                     "en"
