@@ -133,7 +133,7 @@ export default {
       const baseURL = "https://api.tourism.testingmachine.eu/v1/Event?";
       //const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
       const params = new URLSearchParams([
-        ["begindate", new Date().toISOString()],
+        ["begindate", this.formatDateAndTime(new Date())],
         ["locfilter", this.options.locationFilter],
         ["source", this.options.source],
         ["language", this.currentlanguage],
@@ -282,6 +282,9 @@ export default {
     },
     formatDate(date) {
       return moment(date).format("DD-MM-YYYY");
+    },
+    formatDateAndTime(date) {
+      return moment(date).format("YYYY-MM-DD HH:mm");
     },
     getNow: function () {
       const today = new Date();
