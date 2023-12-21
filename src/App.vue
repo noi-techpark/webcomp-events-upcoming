@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       locationToShow: locationToShow,
       eventRotationInterval: eventRotationInterval,
       languageRotationInterval: languageRotationInterval,
+      backgroundColor: backgroundColor,
       fontName: fontName,
       eventSortmode: eventSortmode,
     }"
@@ -30,7 +31,7 @@ export default {
     },
     language: {
       type: String,
-      default: "en",
+      default: "de",
     },
     source: {
       type: String,
@@ -38,7 +39,7 @@ export default {
     },
     maxEvents: {
       type: Number,
-      default: 10,
+      default: 20,
     },
     locationToShow: {
       type: String,
@@ -50,11 +51,15 @@ export default {
     },
     eventRotationInterval: {
       type: Number,
-      default: 60,
+      default: 600,
     },
     languageRotationInterval: {
       type: Number,
-      default: 10,
+      default: 30,
+    },
+    backgroundColor: {
+      type: String,
+      default: "#3c763d",
     },
     fontUrl: {
       type: String,

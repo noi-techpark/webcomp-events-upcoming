@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     v-bind:style="{ 'font-family': this.options.fontName + ', sans-serif' }"
   >
     <header>
-      <h1 class="title">Upcoming <strong>Events</strong></h1>
+      <h1 class="title"><strong>EVENTS</strong></h1>
       <!-- <img
         :src="require('@/assets/icons/NOI_2_BK_borderless.png')"
         class="noi-logo"
@@ -19,7 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         <span id="time">{{ timestamp }}</span>
       </div>
     </header>
-    <div class="slideshow-container full-height">
+    <div
+      class="slideshow-container full-height"
+      v-bind:style="{ 'background-color': this.options.backgroundColor }"
+    >
       <div class="content container-fluid">
         <div class="lines">
           <div class="row line" v-for="event in events" :key="event.key">
@@ -41,7 +44,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
               class="col-sm-5 col-xs-12 col-lg-5 col-lg-offset-0 col-md-5"
               style="justify-content: flex-end"
             >
-              <div class="location">
+              <div
+                class="location"
+                :style="'background-color:' + backgroundcolor"
+              >
                 <span class="room">
                   <strong>
                     {{ event.eventLocation }}
@@ -93,6 +99,9 @@ export default {
     return {
       events: [],
       timestamp: "",
+      languages: ["en", "de", "it"],
+      currentlanguage: "",
+      backgroundcolor: "",
     };
   },
   computed: {
@@ -101,28 +110,34 @@ export default {
     },
   },
   created: function () {
+    this.currentlanguage = this.options.language;
     this.getNow();
-    this.fetchData();
+    this.backgroundcolor = this.options.backgroundColor;
+
+    //If no language is set use the rotation
+    if (this.options.language == "") {
+      this.currentlanguage = "en";
+      setInterval(
+        this.rotateLanguage,
+        this.options.languageRotationInterval * 1000
+      );
+    }
     this.rotateEvents();
     // create cron job
-    setInterval(
-      this.rotateLanguage,
-      this.options.languageRotationInterval * 1000
-    );
     setInterval(this.getNow, 1000);
     setInterval(this.rotateEvents, this.options.eventRotationInterval * 1000);
-    setInterval(this.nextImage, this.options.imageGalleryInterval * 1000);
   },
   methods: {
     async fetchData() {
+      this.events = [];
       const baseURL = "https://api.tourism.testingmachine.eu/v1/Event?";
       //const baseURL = "https://tourism.api.opendatahub.com/v1/Event?";
       const params = new URLSearchParams([
         ["begindate", new Date().toISOString()],
         ["locfilter", this.options.locationFilter],
         ["source", this.options.source],
-        ["language", this.options.language],
-        ["langfilter", this.options.language],
+        ["language", this.currentlanguage],
+        ["langfilter", this.currentlanguage],
         ["pagesize", this.options.maxEvents ? this.options.maxEvents : 999],
         ["active", true],
         ["sort", this.options.eventSortmode],
@@ -140,22 +155,20 @@ export default {
           var items = json.Items;
           for (var i = 0; i <= items.length - 1; ++i) {
             let element = items[i];
-
-            console.log(element.Detail[this.options.language].Title);
             //TODO use EventDAte "EventDate": [{"To": "2023-12-08T00:00:00","End": "22:00:00","From": "2023-12-08T00:00:00","Begin": "10:00:00" nearest
             let startDate = new Date(element.DateBegin);
             let endDate = new Date(element.DateEnd);
             let nextbegin = this.getNextBeginDate(element.EventDate);
             let event = {
               shortName:
-                element.Detail[this.options.language].Title ?? "no title",
+                element.Detail[this.currentlanguage].Title ?? "no title",
               eventLocation: this.getLocationToShow(
                 element,
                 this.options.locationToShow,
-                this.options.language
+                this.currentlanguage
               ),
               //eventText: element.EventTextIT,
-              webAddress: element.ContactInfos[this.options.language].Url,
+              webAddress: element.ContactInfos[this.currentlanguage].Url,
               dateperiod: this.getPeriod(startDate, endDate),
               startDate: this.formatDate(startDate),
               endDate: this.formatDate(endDate),
@@ -171,10 +184,23 @@ export default {
       // first update events
       this.fetchData();
     },
+    rotateLanguage() {
+      let index = this.languages.indexOf(this.currentlanguage) + 1;
+
+      if (index >= this.languages.length) index = 0;
+      this.currentlanguage = this.languages[index];
+
+      console.log("language changed to: " + this.currentlanguage);
+      // first update events
+      this.fetchData();
+    },
     currentDate() {
+      let locale = "en-GB";
+      if (this.currentlanguage == "de") locale = "de-DE";
+      if (this.currentlanguage == "it") locale = "it-IT";
       const current = new Date();
       return current
-        .toLocaleDateString("en-GB", {
+        .toLocaleDateString(locale, {
           month: "long",
           year: "numeric",
           day: "numeric",
@@ -213,13 +239,16 @@ export default {
           var difference = fullstartdate - now;
           var hasended = fullenddate - now;
 
-          if (hasended >= 0 && difference <= 0) difference = difference * -1;
+          if (hasended >= 0 && difference <= 0) difference = 0;
 
           //Only if has not ended and the difference is the minimum
           if (hasended >= 0 && difference <= tempdifference) {
             nextbegindate = new Date(value.From);
 
-            if (value.Begin == "00:00:00" && value.End.startsWith("23:59"))
+            if (
+              value.Begin.startsWith("00:00") &&
+              value.End.startsWith("23:59")
+            )
               nextbegintime = "all day";
             else
               nextbegintime =
@@ -236,12 +265,13 @@ export default {
         }
       });
 
+      //console.log(nextbegindate);
+
       return [nextbegindate, nextbegintime];
     },
     getPeriod(startDate, endDate) {
       var period = this.formatDate(startDate);
       if (startDate.valueOf() != endDate.valueOf()) {
-        console.log("not equal");
         period = period + " - " + this.formatDate(endDate);
       }
 
@@ -302,13 +332,13 @@ h2 small {
 
 h1.title {
   padding: 5px;
-  font-size: 4em;
+  font-size: 48px;
 }
 
 .slideshow-container {
   position: relative;
   padding: 15px;
-  background-color: #3c763d;
+  /* background-color: #3c763d; */
   min-height: 85vh;
   border-radius: 15px;
 }
@@ -349,7 +379,7 @@ body > div {
 
 .location {
   color: #fff;
-  background-color: #3c763d;
+  /* background-color: black; */
   padding: 10px 26px;
   margin-left: 20px;
   margin-right: 20px;
@@ -421,15 +451,16 @@ strong {
 }
 
 #date {
-  padding-right: 40px;
+  padding-right: 30px;
   font-size: 48px;
 }
 
 #time {
-  font-size: 24px;
+  padding-right: 10px;
+  font-size: 28px;
   color: #b2b5b6;
   font-weight: bold;
-  vertical-align: super;
+  vertical-align: middle;
 }
 
 @media screen and (min-width: 320px) and (max-width: 812px) {

@@ -110,22 +110,31 @@
                 }
             },
             {
-              "key": "event-rotation-interval",
+              "key": "event-refresh-interval",
               "type": "number",
-              "label": "Event rotation interval in seconds, if not all events are visible on screen. Will be ignored if max-events os set to 1",
+              "label": "Event refresh interval in seconds, default is set to every ten minutes",
               "required": false,
               "options": {
-                  "default": 60
+                  "default": 600
               }
             },
             {
                 "key": "language-rotation-interval",
                 "type": "number",
-                "label": "Language rotation interval in seconds. Supported languages are 'en','de' and 'it'",
+                "label": "Language rotation interval in seconds. Supported languages are 'en','de' and 'it', if a language is selected this will be ignored.",
                 "required": false,
                 "options": {
-                    "default": 10
+                    "default": 30
                 }
+            },
+            {
+              "key": "background-color",
+              "type": "text",
+              "label": "background color style",
+              "required": false,
+              "options": {
+                  "default": "#3c763d"
+              }
             },
             {
                 "key": "font-url",
