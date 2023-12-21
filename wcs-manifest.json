@@ -99,12 +99,13 @@
             {
                 "key": "event-sortmode",
                 "type": "select",
-                "label": "Select what sortmode for events, upcoming = multiple day events first, upcomingspecial = single day events first",
+                "label": "Select what sortmode for events, upcoming = multiple day events first, upcomingspecial = single day events first, upcomingspecialdesc = sort the nearest event to datetime now first",
                 "required": false,        
                 "options": {
                   "values": [
                     "upcoming",
-                    "upcomingspecial"
+                    "upcomingspecial",
+                    "upcomingspecialdesc"
                   ],
                   "default":"upcomingspecial"
                 }
