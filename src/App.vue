@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       languageRotationInterval: languageRotationInterval,
       backgroundColor: backgroundColor,
       fontName: fontName,
+      fontUrl: fontUrl,
       eventSortmode: eventSortmode,
     }"
   />
@@ -63,8 +64,7 @@ export default {
     },
     fontUrl: {
       type: String,
-      default:
-        "https://s3.eu-west-1.amazonaws.com/it.bz.noi.today.eurac.gallery/milo-pro/style.css",
+      default: "https://fonts.testingmachine.eu/open-sans/style.css",
     },
     fontName: {
       type: String,
