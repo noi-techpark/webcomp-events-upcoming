@@ -143,7 +143,7 @@
                 "label": "URL to a valid font css file",
                 "required": false,
                 "options": {
-                    "default": "https://fonts.testingmachine.eu/source-sans-pro/style.css"
+                    "default": "https://s3.eu-west-1.amazonaws.com/noi-fonts/source-sans-pro/style.css"
                 }
             },
             {

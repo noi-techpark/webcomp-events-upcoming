@@ -64,7 +64,8 @@ export default {
     },
     fontUrl: {
       type: String,
-      default: "https://fonts.testingmachine.eu/open-sans/style.css",
+      default:
+        "https://s3.eu-west-1.amazonaws.com/noi-fonts/open-sans/style.css",
     },
     fontName: {
       type: String,
