@@ -36,13 +36,12 @@
             {
                 "key": "source",
                 "type": "select",
-                "label": "Filter by dataprovider",
+                "label": "Filter by dataprovider (null = all data providers, lts = LTS Data, trevilab = Centro Trevi Cultura Italiana",
                 "required": false,        
                 "options": {
                   "values": [
                     "null",           
-                    "lts",
-                    "drin",
+                    "lts",                    
                     "trevilab"
                   ],
                   "default":"null"
@@ -51,7 +50,7 @@
               {
                 "key": "language",
                 "type": "select",
-                "label": "language to show (if no language is checked the events will rotate and displayed in all languages)",
+                "label": "language to show (if no language is checked the events will change language each x seconds defined in language-rotation-interval)",
                 "required": false,        
                 "options": {
                   "values": [
@@ -132,7 +131,7 @@
             {
               "key": "background-color",
               "type": "text",
-              "label": "background color style",
+              "label": "background color style (Use Hex Code or HTML Color Names) ",
               "required": false,
               "options": {
                   "default": "#3c763d"
