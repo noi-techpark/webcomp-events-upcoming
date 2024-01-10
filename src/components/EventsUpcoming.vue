@@ -169,7 +169,11 @@ export default {
               ),
               //eventText: element.EventTextIT,
               webAddress: element.ContactInfos[this.currentlanguage].Url,
-              dateperiod: this.getPeriod(startDate, endDate),
+              dateperiod: this.getPeriod(
+                startDate,
+                endDate,
+                element.EventAdditionalInfos[this.currentlanguage]
+              ),
               startDate: this.formatDate(startDate),
               endDate: this.formatDate(endDate),
               nextBeginDate: nextbegin[0],
@@ -272,10 +276,13 @@ export default {
 
       return [nextbegindate, nextbegintime];
     },
-    getPeriod(startDate, endDate) {
+    getPeriod(startDate, endDate, additionalinfo) {
       var period = this.formatDate(startDate);
-      if (startDate.valueOf() != endDate.valueOf()) {
+
+      if (startDate.getDate().valueOf() != endDate.getDate().valueOf()) {
         period = period + " - " + this.formatDate(endDate);
+      } else if (additionalinfo != null) {
+        period = additionalinfo.Location;
       }
 
       return period;
