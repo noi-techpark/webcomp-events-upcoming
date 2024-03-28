@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: NOI Techpark <digital@noi.bz.it>
 SPDX-License-Identifier: CC0-1.0
 -->
 
-# Events Upcoming
+# Events Upcoming 
 
 [![REUSE Compliance](https://github.com/noi-techpark/webcomp-events-upcoming/actions/workflows/reuse.yml/badge.svg)](https://github.com/noi-techpark/odh-docs/wiki/REUSE#badges)
 
