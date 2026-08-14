@@ -94,3 +94,8 @@ export default {
   },
 };
 </script>
+
+<style>
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "./assets/css/styles.css";
+</style>

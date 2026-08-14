@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: CC0-1.0
 
 const { defineConfig } = require("@vue/cli-service");
+
 module.exports = defineConfig({
   chainWebpack: (config) => {
     config.module.rule("images").set("parser", {
@@ -11,7 +12,6 @@ module.exports = defineConfig({
       },
     });
   },
-  productionSourceMap: false,
   css: {
     loaderOptions: {
       css: {

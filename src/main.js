@@ -10,3 +10,7 @@ const CustomElement = wrap(Vue, App);
 window.customElements.define("events-upcoming", CustomElement, {
   shadow: true,
 });
+
+// new Vue({
+//   render: (h) => h(App),
+// });

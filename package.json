@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "npm run vcbuild -- --target wc --name events-upcoming ./src/App.vue --watch --inline-vue",
     "start": "npm run serve",
+    "dev": "concurrently -k -n build,server \"npm run serve\" \"live-server dist --port=8081 --open=demo.html --wait=200\"",
     "build": "npm run vcbuild -- --target wc --name events-upcoming ./src/App.vue --inline-vue",
     "lint": "vue-cli-service lint",
     "vcbuild": "vue-cli-service build"
@@ -23,11 +24,13 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "concurrently": "^10.0.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
     "file-loader": "^6.2.0",
+    "live-server": "^1.2.2",
     "prettier": "^2.4.1",
     "vue-template-compiler": "^2.7.14"
   }

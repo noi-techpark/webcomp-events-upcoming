@@ -106,6 +106,10 @@ Download all dependencies:
 npm install
 ```
 
+### Environment
+
+Copy .env.example to .env and set all needed Environment Variables.  
+
 ### Build
 
 Build and start the project:
@@ -115,6 +119,12 @@ npm start
 ```
 
 You can the open the created `dist/demo.html` file in your browser.
+
+## Docker environment
+
+For the project a Docker environment is already prepared and ready to use with all necessary prerequisites.
+
+These Docker containers are the same as used by the continuous integration servers.
 
 ## Deployment
 
