@@ -51,6 +51,26 @@
                 }
             },
             {
+                "key": "theme",
+                "type": "select",
+                "label": "Select a UI theme/skin.",
+                "required": false,
+                "options": {
+                    "values": ["default", "eurac", "noi"],
+                    "default": "default"
+                }
+            },
+            {
+                "key": "show-room-on-main",
+                "type": "select",
+                "label": "Whether to display the specific room for the upcoming meeting on the main card.",
+                "required": false,
+                "options": {
+                    "values": ["false", "true"],
+                    "default": "false"
+                }
+            },
+            {
                 "key": "tags",
                 "type": "text",
                 "label": "Filter by tags. Provide a comma-separated list of tags.",
