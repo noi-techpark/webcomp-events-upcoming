@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     :style="{
       'font-family': options.fontName + ', sans-serif',
       'background-color': options.backgroundColor,
+      '--primary-accent': options.backgroundColor,
     }"
   >
     <header class="events-header">
@@ -92,14 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
             <div class="event-meta">
               <div
-                class="event-location"
-                :style="{
-                  backgroundImage:
-                    'linear-gradient(135deg, ' +
-                    options.backgroundColor +
-                    ' 0%, var(--theme-dark, #2F5C30) 100%)',
-                }"
-              >
+                class="event-location">
                 <span style="display: flex; align-items: center; gap: 0.4rem">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -753,6 +747,7 @@ export default {
   font-weight: 600;
   font-size: 1.15rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: var(--primary-accent, #3c763d);
 }
 
 .event-upcoming {
@@ -862,35 +857,22 @@ export default {
 
 .theme-eurac {
   background-color: #f29400 !important;
-  --primary-accent: #f29400;
+  --primary-accent: #f29400 !important;
   --theme-dark: #cc7d00;
   --room-bg: rgba(242, 148, 0, 0.15);
   --header-text: #ffffff;
 }
 
-.theme-eurac .event-location {
-  background-image: linear-gradient(
-    135deg,
-    #f29400 0%,
-    #cc7d00 100%
-  ) !important;
-}
 
 .theme-noi {
   background-color: #000000 !important;
-  --primary-accent: #000000;
+  --primary-accent: #000000 !important;
   --theme-dark: #111111;
   --room-bg: rgba(0, 0, 0, 0.1);
   --header-text: #ffffff;
 }
 
-.theme-noi .event-location {
-  background-image: linear-gradient(
-    135deg,
-    #333333 0%,
-    #000000 100%
-  ) !important;
-}
+
 
 /* Skeleton Loading Shimmer */
 .skeleton-card {
