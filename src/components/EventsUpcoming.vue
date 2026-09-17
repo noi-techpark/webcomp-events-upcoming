@@ -8,10 +8,18 @@ SPDX-License-Identifier: AGPL-3.0-or-later
   <div
     class="events-widget"
     :class="'theme-' + (options.theme || 'default')"
-    :style="{
-      'font-family': options.fontName + ', sans-serif',
-      'background-color': options.backgroundColor,
-    }"
+    :style="
+      !options.theme || options.theme === 'default'
+        ? {
+            'font-family': options.fontName + ', sans-serif',
+            'background-color': options.backgroundColor,
+            '--primary-accent': options.backgroundColor,
+            '--pill-text': pillTextColor,
+          }
+        : {
+            'font-family': options.fontName + ', sans-serif',
+          }
+    "
   >
     <header class="events-header">
       <h1 class="events-title">EVENTS</h1>
@@ -89,15 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             </div>
 
             <div class="event-meta">
-              <div
-                class="event-location"
-                :style="{
-                  backgroundImage:
-                    'linear-gradient(135deg, ' +
-                    options.backgroundColor +
-                    ' 0%, var(--theme-dark, #2F5C30) 100%)',
-                }"
-              >
+              <div class="event-location">
                 <span style="display: flex; align-items: center; gap: 0.4rem">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -252,6 +252,43 @@ export default {
   computed: {
     orderedEvents: function () {
       return _.orderBy(this.events, "nextBeginDate");
+    },
+    pillTextColor() {
+      const color = this.options.backgroundColor;
+      if (!color || typeof document === "undefined") return "white";
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = color;
+      const normalized = ctx.fillStyle;
+
+      if (normalized.startsWith("#")) {
+        let r, g, b;
+        if (normalized.length === 7) {
+          r = parseInt(normalized.substr(1, 2), 16);
+          g = parseInt(normalized.substr(3, 2), 16);
+          b = parseInt(normalized.substr(5, 2), 16);
+        } else if (normalized.length === 4) {
+          r = parseInt(normalized.substr(1, 1).repeat(2), 16);
+          g = parseInt(normalized.substr(2, 1).repeat(2), 16);
+          b = parseInt(normalized.substr(3, 1).repeat(2), 16);
+        }
+        const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+        return yiq >= 128 ? "#1a202c" : "white";
+      } else if (
+        normalized.startsWith("rgba") ||
+        normalized.startsWith("rgb")
+      ) {
+        const match = normalized.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (match) {
+          const r = parseInt(match[1], 10);
+          const g = parseInt(match[2], 10);
+          const b = parseInt(match[3], 10);
+          const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+          return yiq >= 128 ? "#1a202c" : "white";
+        }
+      }
+      return "white";
     },
   },
   created: function () {
@@ -716,7 +753,7 @@ export default {
     var(--primary-accent, #3c763d)
   );
   background-size: 0% 2px;
-  background-repeat: no-wrap;
+  background-repeat: no-repeat;
   background-position: left bottom;
   padding-bottom: 2px;
   transition: background-size 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
@@ -745,7 +782,13 @@ export default {
 }
 
 .event-location {
-  color: white;
+  color: var(--pill-text, white);
+  background-color: var(--primary-accent, #3c763d);
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
   padding: 0.6rem 1.4rem;
   border-radius: 9999px;
   font-weight: 600;
@@ -866,28 +909,12 @@ export default {
   --header-text: #ffffff;
 }
 
-.theme-eurac .event-location {
-  background-image: linear-gradient(
-    135deg,
-    #f29400 0%,
-    #cc7d00 100%
-  ) !important;
-}
-
 .theme-noi {
   background-color: #000000 !important;
   --primary-accent: #000000;
   --theme-dark: #111111;
   --room-bg: rgba(0, 0, 0, 0.1);
   --header-text: #ffffff;
-}
-
-.theme-noi .event-location {
-  background-image: linear-gradient(
-    135deg,
-    #333333 0%,
-    #000000 100%
-  ) !important;
 }
 
 /* Skeleton Loading Shimmer */
