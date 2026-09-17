@@ -248,6 +248,43 @@ export default {
     orderedEvents: function () {
       return _.orderBy(this.events, "nextBeginDate");
     },
+    pillTextColor() {
+      const color = this.options.backgroundColor;
+      if (!color || typeof document === "undefined") return "white";
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = color;
+      const normalized = ctx.fillStyle;
+
+      if (normalized.startsWith("#")) {
+        let r, g, b;
+        if (normalized.length === 7) {
+          r = parseInt(normalized.substr(1, 2), 16);
+          g = parseInt(normalized.substr(3, 2), 16);
+          b = parseInt(normalized.substr(5, 2), 16);
+        } else if (normalized.length === 4) {
+          r = parseInt(normalized.substr(1, 1).repeat(2), 16);
+          g = parseInt(normalized.substr(2, 1).repeat(2), 16);
+          b = parseInt(normalized.substr(3, 1).repeat(2), 16);
+        }
+        const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+        return yiq >= 128 ? "#1a202c" : "white";
+      } else if (
+        normalized.startsWith("rgba") ||
+        normalized.startsWith("rgb")
+      ) {
+        const match = normalized.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (match) {
+          const r = parseInt(match[1], 10);
+          const g = parseInt(match[2], 10);
+          const b = parseInt(match[3], 10);
+          const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+          return yiq >= 128 ? "#1a202c" : "white";
+        }
+      }
+      return "white";
+    },
   },
   created: function () {
     this.currentlanguage = this.options.language;
@@ -739,7 +776,13 @@ export default {
 }
 
 .event-location {
-  color: white;
+  color: var(--pill-text, white);
+  background-color: var(--primary-accent, #3c763d);
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
   padding: 0.6rem 1.4rem;
   border-radius: 9999px;
   font-weight: 600;
