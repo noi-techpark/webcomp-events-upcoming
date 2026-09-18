@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
       theme: theme,
       showRoomOnMain: showRoomOnMain,
       maxEvents: maxEvents,
+      maxEventDates: maxEventDates,
       locationToShow: locationToShow,
       eventRefreshInterval: eventRefreshInterval,
       languageRotationInterval: languageRotationInterval,
@@ -67,6 +68,10 @@ export default {
       type: Number,
       default: 12,
     },
+    maxEventDates: {
+      type: Number,
+      default: 8,
+    },
     locationToShow: {
       type: String,
       default: "district",
@@ -85,7 +90,7 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: "#3c763d",
+      default: "",
     },
     fontUrl: {
       type: String,
