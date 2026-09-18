@@ -56,7 +56,7 @@
                 "label": "Select a UI theme/skin.",
                 "required": false,
                 "options": {
-                    "values": ["default", "eurac", "noi"],
+                    "values": ["default", "orange", "noi", "eurac"],
                     "default": "default"
                 }
             },
@@ -132,6 +132,15 @@
                 }
             },
             {
+                "key": "max-event-dates",
+                "type": "number",
+                "label": "Max number of upcoming dates to display per event when expanded (past dates are always excluded)",
+                "required": false,
+                "options": {
+                    "default": 8
+                }
+            },
+            {
                 "key": "location-to-show",
                 "type": "select",
                 "label": "Select what locationinfo to show",
@@ -182,10 +191,10 @@
             {
               "key": "background-color",
               "type": "text",
-              "label": "background color style (Use Hex Code or HTML Color Names) ",
+              "label": "Background color override (Use Hex Code or HTML Color Names). Overrides the selected theme's color when set; leave empty to use the theme's default.",
               "required": false,
               "options": {
-                  "default": "#3c763d"
+                  "default": ""
               }
             },
             {

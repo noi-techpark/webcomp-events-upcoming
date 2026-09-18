@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     class="events-widget"
     :class="'theme-' + (options.theme || 'default')"
     :style="
-      !options.theme || options.theme === 'default'
+      options.backgroundColor
         ? {
             'font-family': options.fontName + ', sans-serif',
             'background-color': options.backgroundColor,
@@ -85,7 +85,62 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           :aria-expanded="isExpanded(index).toString()"
           :class="{ 'is-expanded': isExpanded(index) }"
         >
-          <div class="event-card-main">
+          <!-- Eurac layout: date+time | company + title/subtitle | room -->
+          <div v-if="isEuracLayout" class="event-card-main eurac-layout">
+            <div class="event-time-col">
+              <div class="event-upcoming-date">
+                {{ formatDate(event.nextBeginDate) }}
+              </div>
+              <div class="event-upcoming-time">
+                {{ event.nextBeginTime }}
+              </div>
+            </div>
+
+            <div class="event-info">
+              <div class="event-company" v-if="event.companyName">
+                {{ event.companyName }}
+              </div>
+              <h2 class="event-name" v-if="event.webAddress">
+                <a :href="event.webAddress" target="_blank" @click.stop>
+                  <span class="event-name-text">{{ event.shortName }}</span>
+                </a>
+              </h2>
+              <h2 class="event-name" v-else>
+                <span class="event-name-text">{{ event.shortName }}</span>
+              </h2>
+              <div class="event-subtitle" v-if="event.subtitle">
+                {{ event.subtitle }}
+              </div>
+            </div>
+
+            <div class="event-room-box" v-if="event.eventLocation">
+              {{ event.eventLocation }}
+            </div>
+
+            <div
+              class="expand-icon"
+              :class="{ 'is-rotated': isExpanded(index) }"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                width="24"
+                height="24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Default / Noi layout: title/subtitle | venue | date | expand -->
+          <div v-else class="event-card-main">
             <div class="event-info">
               <h2 class="event-name" v-if="event.webAddress">
                 <a :href="event.webAddress" target="_blank" @click.stop>{{
@@ -170,7 +225,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <!-- Expanded Details -->
           <transition name="expand">
             <div v-if="isExpanded(index)" class="event-expanded">
-              <div class="expanded-header">All Event Dates:</div>
+              <div class="expanded-header">Upcoming Dates:</div>
               <div class="expanded-dates">
                 <div
                   v-for="(d, dIndex) in event.allDates"
@@ -205,6 +260,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <span class="date-room" v-if="d.roomName">{{
                     d.roomName
                   }}</span>
+                </div>
+                <div
+                  v-if="event.remainingDatesCount > 0"
+                  class="expanded-dates-more"
+                >
+                  &hellip; and {{ event.remainingDatesCount }} more date{{
+                    event.remainingDatesCount === 1 ? "" : "s"
+                  }}
                 </div>
               </div>
             </div>
@@ -250,6 +313,9 @@ export default {
     };
   },
   computed: {
+    isEuracLayout() {
+      return this.options.theme === "eurac";
+    },
     orderedEvents: function () {
       return _.orderBy(this.events, "nextBeginDate");
     },
@@ -393,9 +459,18 @@ export default {
               );
           }
 
+          const futureDates = this.getFutureEventDates(element.EventDate);
+          const maxEventDates = this.options.maxEventDates || 8;
+
           let event = {
             shortName:
               element.Detail?.[this.currentlanguage]?.Title ?? "no title",
+            subtitle:
+              element.Detail?.[this.currentlanguage]?.SubHeader ??
+              element.Detail?.en?.SubHeader,
+            companyName:
+              element.OrganizerInfos?.[this.currentlanguage]?.CompanyName ??
+              element.OrganizerInfos?.en?.CompanyName,
             eventLocation: eventLocation,
             webAddress: element.ContactInfos?.[this.currentlanguage]?.Url,
             dateperiod: this.getPeriod(
@@ -407,7 +482,11 @@ export default {
             endDate: this.formatDate(endDate),
             nextBeginDate: nextbegin[0],
             nextBeginTime: nextbegin[1],
-            allDates: element.EventDate,
+            allDates: futureDates.slice(0, maxEventDates),
+            remainingDatesCount: Math.max(
+              0,
+              futureDates.length - maxEventDates
+            ),
             room: "", // Will be populated in Date parsing if available
           };
 
@@ -515,6 +594,21 @@ export default {
       if (locationToShow == "location")
         return event.EventAdditionalInfos?.[language]?.Location;
       else return event.LocationInfo?.DistrictInfo?.Name?.[language];
+    },
+    getFutureEventDates(eventdate) {
+      if (!eventdate) return [];
+      const now = Date.now();
+
+      return eventdate
+        .filter((value) => {
+          const fullEndDate = new Date(value.To.replace("00:00:00", value.End));
+          return fullEndDate.getTime() >= now;
+        })
+        .sort((a, b) => {
+          const startA = new Date(a.From.replace("00:00:00", a.Begin));
+          const startB = new Date(b.From.replace("00:00:00", b.Begin));
+          return startA - startB;
+        });
     },
     getNextBeginDate(eventdate) {
       let nextbegindate = null;
@@ -740,7 +834,7 @@ export default {
 .event-name {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #1a202c;
+  color: var(--text-main, #1a202c);
   line-height: 1.25;
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
@@ -804,7 +898,7 @@ export default {
 .event-upcoming-date {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #1a202c;
+  color: var(--text-main, #1a202c);
 }
 
 .event-upcoming-time {
@@ -845,20 +939,21 @@ export default {
 }
 
 .expanded-dates {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .expanded-date-item {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: 0.4rem;
   background: rgba(0, 0, 0, 0.03);
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 1.1rem;
   border-radius: 8px;
   border-left: 4px solid var(--primary-accent, #3c763d);
   gap: 0.75rem;
-  white-space: nowrap;
 }
 
 .date-day {
@@ -867,54 +962,215 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  flex: 0 0 auto;
 }
 
 .date-day .meta-icon {
   width: 16px;
   height: 16px;
   color: var(--primary-accent, #3c763d);
+  flex-shrink: 0;
 }
 
 .date-time {
   color: var(--text-muted, #718096);
   font-size: 0.95rem;
   font-weight: 500;
+  flex: 0 0 auto;
 }
 
 .date-room {
   font-size: 0.85rem;
   color: var(--text-main, #2d3748);
   font-weight: 600;
-  margin-left: 0.75rem;
+  margin-left: auto;
   background: var(--room-bg, rgba(60, 118, 61, 0.1));
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expanded-dates-more {
+  text-align: center;
+  padding-top: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted, #718096);
+  letter-spacing: 0.02em;
 }
 
 /* Themes */
 .theme-default {
+  background-color: #3c763d;
   --primary-accent: #3c763d;
   --theme-dark: #2f5c30;
   --room-bg: rgba(60, 118, 61, 0.1);
   --header-text: #ffffff;
 }
 
-.theme-eurac {
-  background-color: #f29400 !important;
+.theme-orange {
+  background-color: #f29400;
   --primary-accent: #f29400;
   --theme-dark: #cc7d00;
   --room-bg: rgba(242, 148, 0, 0.15);
   --header-text: #ffffff;
 }
 
+.theme-orange .event-card {
+  border-radius: 6px;
+}
+
+.theme-orange .event-name {
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.theme-orange .event-period {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.theme-orange .event-location {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.theme-orange .event-upcoming-date {
+  font-size: 2.5rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.theme-orange .event-upcoming-time {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.theme-orange .expanded-date-item {
+  border-radius: 6px;
+}
+
+.theme-orange .date-room {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
 .theme-noi {
-  background-color: #000000 !important;
+  background-color: #000000;
   --primary-accent: #000000;
   --theme-dark: #111111;
   --room-bg: rgba(0, 0, 0, 0.1);
   --header-text: #ffffff;
+}
+
+.theme-eurac {
+  background-color: #414649;
+  --primary-accent: #666b6c;
+  --theme-dark: #35393b;
+  --room-bg: rgba(255, 255, 255, 0.08);
+  --header-text: #ffffff;
+  --text-main: #ffffff;
+  --text-muted: #b2b5b6;
+  --card-bg: transparent;
+  --pill-text: #ffffff;
+}
+
+.theme-eurac .events-list {
+  gap: 0;
+}
+
+.theme-eurac .event-card {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 1.5rem 0.5rem;
+}
+
+.theme-eurac .event-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.theme-eurac .expanded-header {
+  color: var(--text-muted);
+}
+
+.theme-eurac .expanded-date-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-left-color: var(--primary-accent);
+}
+
+/* Eurac layout: date+time | company + title/subtitle | room */
+.eurac-layout {
+  justify-content: flex-start;
+}
+
+.event-time-col {
+  flex: 0 0 110px;
+}
+
+.event-time-col .event-upcoming-date {
+  text-align: left;
+}
+
+.event-time-col .event-upcoming-time {
+  justify-content: flex-start;
+}
+
+.event-company {
+  display: inline-block;
+  background: var(--primary-accent, #666b6c);
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+}
+
+.event-subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted, #718096);
+  margin-top: 0.35rem;
+}
+
+.event-room-box {
+  flex: 0 0 auto;
+  background: var(--primary-accent, #666b6c);
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.75rem 1.1rem;
+  border-radius: 8px;
+  min-width: 90px;
+}
+
+@media (max-width: 768px) {
+  .eurac-layout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .event-time-col .event-upcoming-time {
+    justify-content: flex-start;
+  }
+  .event-room-box {
+    align-self: flex-start;
+  }
 }
 
 /* Skeleton Loading Shimmer */
@@ -1058,25 +1314,6 @@ export default {
   transform: rotate(180deg);
 }
 
-.date-bullet {
-  display: none;
-}
-
-.date-day {
-  font-weight: 600;
-  margin-right: auto;
-  font-size: 1.05rem;
-}
-
-.date-time {
-  font-family: monospace;
-  background: rgba(0, 0, 0, 0.06);
-  padding: 0.35rem 0.65rem;
-  border-radius: 6px;
-  font-size: 0.95em;
-  font-weight: 600;
-}
-
 /* Transitions */
 .expand-enter-active,
 .expand-leave-active {
@@ -1136,6 +1373,10 @@ export default {
   }
   .event-upcoming {
     text-align: right;
+  }
+  .date-room {
+    margin-left: 0;
+    flex-basis: 100%;
   }
 }
 </style>
