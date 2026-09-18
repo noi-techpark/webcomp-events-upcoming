@@ -143,11 +143,13 @@ SPDX-License-Identifier: AGPL-3.0-or-later
           <div v-else class="event-card-main">
             <div class="event-info">
               <h2 class="event-name" v-if="event.webAddress">
-                <a :href="event.webAddress" target="_blank" @click.stop>{{
-                  event.shortName
-                }}</a>
+                <a :href="event.webAddress" target="_blank" @click.stop>
+                  <span class="event-name-text">{{ event.shortName }}</span>
+                </a>
               </h2>
-              <h2 class="event-name" v-else>{{ event.shortName }}</h2>
+              <h2 class="event-name" v-else>
+                <span class="event-name-text">{{ event.shortName }}</span>
+              </h2>
               <div class="event-period">{{ event.dateperiod }}</div>
             </div>
 
@@ -840,7 +842,7 @@ export default {
   letter-spacing: -0.02em;
 }
 
-.event-name a {
+.event-name-text {
   text-decoration: none;
   background-image: linear-gradient(
     var(--primary-accent, #3c763d),
@@ -855,7 +857,7 @@ export default {
   color: inherit;
 }
 
-.event-card:hover .event-name a {
+.event-card:hover .event-name-text {
   background-size: 100% 2px;
   color: var(--primary-accent, #3c763d);
 }

@@ -113,15 +113,15 @@
                   "default":"en"
                 }
             },
-              {
-                "key": "location",
-                "type": "text",
-                "label": "Location Filter (pass type + id check out https://tourism.opendatahub.com/v1/Location)",
-                "required": false,
-                "options": {
-                  "default": ""
-                }
-              },
+            //   {
+            //     "key": "location",
+            //     "type": "text",
+            //     "label": "Location Filter (pass type + id check out https://tourism.api.opendatahub.com/v1/Location)",
+            //     "required": false,
+            //     "options": {
+            //       "default": ""
+            //     }
+            //   },
             {
                 "key": "max-events",
                 "type": "number",
